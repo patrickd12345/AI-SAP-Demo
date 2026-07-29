@@ -1,0 +1,9 @@
+{
+  "mode": "simulated-static-analysis",
+  "initialState": {
+    "overall": "FAIL",
+    "pass": [1, 5, 9],
+    "fail": [2, 3, 4, 6, 7, 8]
+  },
+  "realSapConnection": "NOT_ATTEMPTED"
+}
