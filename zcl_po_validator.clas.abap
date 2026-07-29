@@ -14,9 +14,33 @@ ENDCLASS.
 
 CLASS zcl_po_validator IMPLEMENTATION.
   METHOD validate.
-    DATA: lt_items TYPE STANDARD TABLE OF ekpo,
-          ls_item  TYPE ekpo,
-          lv_x     TYPE ekko-bukrs.
+    DATA: lt_items   TYPE STANDARD TABLE OF ekpo,
+          ls_item    TYPE ekpo,
+          lv_bukrs   TYPE ekko-bukrs.
+
+    " Demo-only placeholder. Replace with the client-approved authorization
+    " object and fields before any real SAP use.
+    AUTHORITY-CHECK OBJECT 'Z_DEMO_PO'
+      ID 'ACTVT' FIELD '02'.
+    IF sy-subrc <> 0.
+      rv_message = 'Not authorized to approve purchase order'.
+      RETURN.
+    ENDIF.
+
+    IF iv_amount <= 0.
+      rv_message = 'Purchase order amount must be greater than zero'.
+      RETURN.
+    ENDIF.
+
+    SELECT SINGLE bukrs
+      FROM ekko
+      INTO lv_bukrs
+      WHERE ebeln = iv_ebeln.
+
+    IF lv_bukrs IS INITIAL.
+      rv_message = 'Invalid purchase order'.
+      RETURN.
+    ENDIF.
 
     SELECT *
       FROM ekpo
@@ -24,26 +48,12 @@ CLASS zcl_po_validator IMPLEMENTATION.
       WHERE ebeln = iv_ebeln.
 
     LOOP AT lt_items INTO ls_item.
-      SELECT SINGLE bukrs
-        FROM ekko
-        INTO lv_x
-        WHERE ebeln = ls_item-ebeln.
-
-      IF ls_item-menge = 0.
-        rv_message = 'Item quantity is invalid'.
-      ENDIF.
-
-      IF lv_x IS INITIAL.
-        rv_message = 'Invalid purchase order'.
+      IF ls_item-menge <= 0.
+        rv_message = 'Purchase order item quantity must be greater than zero'.
+        RETURN.
       ENDIF.
     ENDLOOP.
 
-    IF iv_amount = 0.
-      rv_message = 'Invalid amount'.
-    ENDIF.
-
-    IF rv_message IS INITIAL.
-      rv_message = 'OK'.
-    ENDIF.
+    rv_message = 'OK'.
   ENDMETHOD.
 ENDCLASS.
