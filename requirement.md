@@ -16,8 +16,13 @@ Validate a purchase order before approval while preserving the existing public m
 8. Document checks that still require a real SAP environment.
 9. Clearly distinguish static demo evidence from real SAP execution.
 
+## Demo authorization placeholder
+
+The demo uses the fictional authorization object `Z_DEMO_PO` with activity `02` only to demonstrate a bounded authorization check. It is not claimed to exist in any SAP system and must be replaced with the client-approved authorization object and fields before real use.
+
 ## Real SAP checks still required
 
+- Replace the fictional `Z_DEMO_PO` object with the approved client authorization object and fields
 - Syntax check and class activation
 - ATC or Code Inspector execution
 - ABAP Unit execution in the target system
@@ -25,3 +30,7 @@ Validate a purchase order before approval while preserving the existing public m
 - DDIC type and database-object validation
 - Transport dependency and import-sequence review
 - QA regression testing
+
+## Evidence limitation
+
+The repository evaluator performs simulated/static checks only. It does not prove SAP syntax, activation, ATC, authorization behaviour, ABAP Unit execution, transport readiness, or QA acceptance.
